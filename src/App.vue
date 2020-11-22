@@ -5,20 +5,24 @@
       :coords="clickedCoords || [55.752441, 37.617697]"
       style="width: 100%; height: 100vh;"
       zoom="10"
+      @map-was-initialized="initHandler"
       @click="onMapClick"
     />
   </div>
 </template>
 
 <script>
-  import { yandexMap} from 'vue-yandex-maps'
-  import InfoBar from "./components/InfoBar.vue"
+import {yandexMap, loadYmap} from 'vue-yandex-maps'
+import InfoBar from "./components/InfoBar.vue"
+import MKADCoords from "./polygons/MKADCoords"
+
+let ymaps
 
 export default {
   name: 'App',
   data() {
     return {
-      clickedCoords: null
+      clickedCoords: null,
     }
   },
   components: {
@@ -26,16 +30,15 @@ export default {
     InfoBar
   },
   methods: {
-    onMapClick(e) {
-      const coords = this._getCoords(e)
-      this._saveCoords(coords)
-    },
+    async initHandler(map) {
+      await loadYmap();
+      ymaps = window.ymaps; // здесь доступен весь функционал ymaps
 
-    _getCoords(e) {
-      return e.get('coords')
+      const mkad = new ymaps.Polygon([MKADCoords]);
+      map.geoObjects.add(mkad)
     },
-    _saveCoords(coords) {
-      this.clickedCoords = coords
+    onMapClick(mapE) {
+      this.clickedCoords = mapE.get('coords')
     }
   }
   // other options
