@@ -1,46 +1,43 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
+    <info-bar :clicked-coords="clickedCoords"/>
     <yandex-map
-      :coords="[55.752441, 37.617697]"
+      :coords="clickedCoords || [55.752441, 37.617697]"
       style="width: 100%; height: 100vh;"
       zoom="10"
-      @map-was-initialized="initHandler"
+      @click="onMapClick"
     />
   </div>
 </template>
 
 <script>
-  import { yandexMap, /*ymapMarker*/ } from 'vue-yandex-maps'
-  import settings from "./settings"
+  import { yandexMap} from 'vue-yandex-maps'
+  import InfoBar from "./components/InfoBar.vue"
 
 export default {
   name: 'App',
   data() {
     return {
-      settings
+      clickedCoords: null
     }
   },
   components: {
     yandexMap,
-    // ymapMarker
+    InfoBar
   },
   methods: {
-    initHandler() {
-      console.log('map-was-initialized')
+    onMapClick(e) {
+      const coords = this._getCoords(e)
+      this._saveCoords(coords)
+    },
+
+    _getCoords(e) {
+      return e.get('coords')
+    },
+    _saveCoords(coords) {
+      this.clickedCoords = coords
     }
   }
   // other options
 }
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 20px;
-}
-</style>
