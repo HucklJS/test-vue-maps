@@ -7,12 +7,19 @@
       zoom="10"
       @map-was-initialized="initHandler"
       @click="onMapClick"
-    />
+    >
+      <ymap-marker
+        v-if="clickedCoords"
+        :coords="clickedCoords"
+        marker-id="clicked-marker"
+        hint-content="clicked-marker"
+      />
+    </yandex-map>
   </div>
 </template>
 
 <script>
-import {yandexMap, loadYmap} from 'vue-yandex-maps'
+import {yandexMap, ymapMarker, loadYmap} from 'vue-yandex-maps'
 import InfoBar from "./components/InfoBar.vue"
 import MKADCoords from "./polygons/MKADCoords"
 
@@ -27,6 +34,7 @@ export default {
   },
   components: {
     yandexMap,
+    ymapMarker,
     InfoBar
   },
   methods: {
