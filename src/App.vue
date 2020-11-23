@@ -21,23 +21,30 @@
         marker-id="closest-point-coords"
         hint-content="closest-point-coords"
       />
+
+      <ymap-marker
+        marker-type="Polygon"
+        :coords="[MKADCoords]"
+        marker-id="MKAD-Polygon"
+        hint-content="MKAD-Polygon"
+      />
     </yandex-map>
   </div>
 </template>
 
 <script>
-  import {loadYmap, yandexMap, ymapMarker} from 'vue-yandex-maps'
+  import {yandexMap, ymapMarker} from 'vue-yandex-maps'
   import InfoBar from "./components/InfoBar.vue"
   import MKADCoords from "./polygons/MKADCoords"
 
-  let ymaps
 
 export default {
   name: 'App',
   data() {
     return {
       clickedCoords: null,
-      closestPointCoords: null
+      closestPointCoords: null,
+      MKADCoords
     }
   },
   components: {
@@ -46,23 +53,18 @@ export default {
     InfoBar
   },
   methods: {
-    async initHandler(map) {
-      await loadYmap();
-      ymaps = window.ymaps; // здесь доступен весь функционал ymaps
+    async initHandler(/*map*/) {
 
-      this._paintMKADPolygon(map, MKADCoords)
     },
     onMapClick(mapE) {
+      const map = mapE.originalEvent.target
       this.clickedCoords = mapE.get('coords')
+      console.log(map)
 
       this.closestPointCoords = this._findClosestPointTo(this.clickedCoords)
     },
 
-    _paintMKADPolygon(map, coords) {
-      const mkad = new ymaps.Polygon([coords]);
-      map.geoObjects.add(mkad)
-    },
-    _findClosestPointTo: function ([clickY, clickX]) {
+    _findClosestPointTo([clickY, clickX]) {
       const distances = MKADCoords.map(
         ([y, x]) => Math.sqrt((y - clickY) ** 2 + (x - clickX) ** 2)
       )
